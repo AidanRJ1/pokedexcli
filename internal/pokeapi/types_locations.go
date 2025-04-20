@@ -39,11 +39,14 @@ type LocationDetail struct {
 		Name string `json:"name"`
 	} `json:"names"`
 	PokemonEncounters []struct {
-		Pokemon        Pokemon `json:"pokemon"`
+		Pokemon       struct {
+			Name string `json:"name"`
+			Url  string `json:"url"`
+		} `json:"pokemon"`
 		VersionDetails []struct {
 			EncounterDetails []struct {
 				Chance          int       `json:"chance"`
-				ConditionValues []*string `json:"condition_values"` // Potential ERROR
+				ConditionValues []interface{} `json:"condition_values"`
 				MaxLevel        int       `json:"max_level"`
 				Method          struct {
 					Name string `json:"name"`
@@ -58,9 +61,4 @@ type LocationDetail struct {
 			} `json:"version"`
 		} `json:"version_details"`
 	} `json:"pokemon_encounters"`
-}
-
-type Pokemon struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
 }
