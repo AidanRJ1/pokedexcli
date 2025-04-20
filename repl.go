@@ -1,64 +1,77 @@
 package main
 
 import (
-	"strings"
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
+
 	"github.com/AidanRJ1/pokedexcli/internal/pokeapi"
 )
 
 type cliCommand struct {
-	name        string
-	description string
+	name          string
+	description   string
 	needArguments bool
-	callback    func(*config, ...string) error
+	callback      func(*config, ...string) error
 }
 
 type config struct {
-	pokeapiClient pokeapi.Client
-	caughtPokemon map[string]pokeapi.Pokemon
-	nextLocationsURL *string
+	pokeapiClient        pokeapi.Client
+	caughtPokemon        map[string]pokeapi.Pokemon
+	nextLocationsURL     *string
 	previousLocationsURL *string
 }
 
 func getCommands() map[string]cliCommand {
 	commands := map[string]cliCommand{
 		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
+			name:          "exit",
+			description:   "Exit the Pokedex",
 			needArguments: false,
-			callback:    commandExit,
+			callback:      commandExit,
 		},
 		"help": {
-			name:        "help",
-			description: "Displays a help message",
+			name:          "help",
+			description:   "Displays a help message",
 			needArguments: false,
-			callback:    commandHelp,
+			callback:      commandHelp,
 		},
 		"map": {
-			name:        "map",
-			description: "Displays a list of the next 20 locations",
+			name:          "map",
+			description:   "Displays a list of the next 20 locations",
 			needArguments: false,
-			callback:    commandMapf,
+			callback:      commandMapf,
 		},
 		"mapb": {
-			name: "mapb",
-			description: "Displays a list of the previous 20 locations",
+			name:          "mapb",
+			description:   "Displays a list of the previous 20 locations",
 			needArguments: false,
-			callback: commandMapb,
+			callback:      commandMapb,
 		},
 		"explore": {
-			name: "explore",
-			description: "Displays a list of pokemon found in provided area",
+			name:          "explore",
+			description:   "Displays a list of pokemon found in provided area",
 			needArguments: true,
-			callback: commandExplore,
+			callback:      commandExplore,
 		},
 		"catch": {
-			name: "catch",
-			description: "Try to catch provided pokemon",
+			name:          "catch",
+			description:   "Try to catch provided pokemon",
 			needArguments: true,
-			callback: commandCatch,
+			callback:      commandCatch,
+		},
+		"inspect": {
+			name:          "inspect",
+			description:   "Inspect caught pokemon",
+			needArguments: true,
+			callback:      commandInspect,
+		},
+		"pokedex": {
+			name: "pokedex",
+			description: "List all caught pokemon",
+			needArguments: false,
+			callback: commandPokedex,	
 		},
 	}
 	return commands
@@ -87,7 +100,6 @@ func startRepl(cfg *config) {
 		}
 
 		commandName := words[0]
-	
 
 		if command, exists := getCommands()[commandName]; exists {
 			if command.needArguments {
